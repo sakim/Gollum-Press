@@ -25,13 +25,13 @@ def get_posts():
                         working_dir=app.config['REPOSITORY'],
                         index=app.config['INDEX_PAGE'],
                         per_page=app.config['POSTS_PER_PAGE'])
-    return render_template('post_list.html', posts=postList.posts, page=page)
+    return render_template(u"{0}/post_list.html".format(app.config['THEME']), posts=postList.posts, page=page)
 
 
 @app.route('/posts/<path:post_id>', methods=['GET'])
 def get_post(post_id):
     post = Post(post_id, working_dir=app.config['REPOSITORY'])
-    return render_template('post.html', post=post)
+    return render_template(u"{0}/post.html".format(app.config['THEME']), post=post)
 
 
 @app.route('/atom.xml', methods=['GET'])

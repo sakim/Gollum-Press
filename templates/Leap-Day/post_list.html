@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "Leap-Day/layout.html" %}
 
 {% block body %}
     {% for post in posts %}
@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block pagination %}
-    <div class='pagination' ng-switch on="page" >
+    <div class='pagination'>
         {% if page != 1 %}
             <a href="/posts?page={{ page - 1 }}">< 이전</a>
         {% endif %}
