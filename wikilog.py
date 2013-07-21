@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+import sys, os
+sys.path.append(os.getcwd())
+
 from dateutil import parser
 from flask import Flask, request, redirect, url_for
 from flask.templating import render_template
