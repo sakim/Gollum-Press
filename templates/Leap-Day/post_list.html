@@ -8,7 +8,8 @@
             <span class="credits">by {{ post.author }}</span>
             <div>{{ post.content_markup }}</div>
 
-            <a href="{{ config.SITE_URL }}/posts/{{ post.post_id }}#disqus_thread"></a>
+            <a href="{{ config.SITE_URL }}/posts/{{ post.post_id }}#disqus_thread"
+               data-disqus-identifier="{{ post.post_id }}"></a>
         </section>
         <script type="text/javascript">
             var fromNow = moment('{{ post.date }}', "YYYY-MM-DD HH:mm:ss Z").fromNow();
