@@ -1,0 +1,60 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="alternate" type="application/atom+xml" title="{{ config.TITLE }}" href="{{ config.SITE_URL }}/atom.xml">
+
+    <title>{{ config.TITLE }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/pygment_trac.css') }}">
+    <script src="{{ url_for('static', filename='javascripts/jquery-1.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/moment.min.js') }}"></script>
+
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+</head>
+<body>
+
+<header>
+    <h1>{{ config.TITLE }}</h1>
+    <p>{{ config.DESCRIPTION }}</p>
+</header>
+
+<div id="banner">
+    <div class="banner-inner">
+        <span id="logo"></span>
+
+        <a href="/" class="button fork"><strong>home</strong></a>
+        <div class="downloads">
+            <ul>
+                <li><a href="{{ config.WIKI_URL }}" class="button">wiki</a></li>
+                <li><a href="/atom.xml" class="button">feed</a></li>
+            </ul>
+        </div>
+    </div>
+</div><!-- end banner -->
+
+<div class="wrapper">
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+
+    {% block pagination %}{% endblock %}
+
+    <footer>
+        <p>Project maintained by <a href="https://github.com/sakim">sakim</a></p>
+        <p><span class="small">Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span></p>
+    </footer>
+</div>
+<!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+</body>
+</html>
