@@ -32,8 +32,12 @@
         <a href="/" class="button fork"><strong>home</strong></a>
         <div class="downloads">
             <ul>
-                <li><a href="{{ config.WIKI_URL }}" class="button">wiki</a></li>
-                <li><a href="/atom.xml" class="button">feed</a></li>
+                {% if config.GOOGLE_FEED_BURNER_ADDRESS %}
+                    <li><a href="http://feeds.feedburner.com/{{ config.GOOGLE_FEED_BURNER_ADDRESS }}" class="button">feed</a></li>
+                {% else %}
+                    <li><a href="/atom.xml" class="button">feed</a></li>
+                {% endif %}
+
             </ul>
         </div>
     </div>
