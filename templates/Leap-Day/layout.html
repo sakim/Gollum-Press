@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <link rel="alternate" type="application/atom+xml" title="{{ config.TITLE }}" href="{{ config.SITE_URL }}/atom.xml">
 
-    <title>{{ config.TITLE }}</title>
+    {% block title %}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='Leap-Day/stylesheets/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='Leap-Day/stylesheets/pygment_trac.css') }}">
     <script src="{{ url_for('static', filename='Leap-Day/javascripts/jquery-1.7.1.min.js') }}"></script>

@@ -1,5 +1,9 @@
 {% extends "Leap-Day/layout.html" %}
 
+{% block title %}
+    <title>{{ config.TITLE }}</title>
+{% endblock %}
+
 {% block body %}
     {% for post in posts %}
         <section>

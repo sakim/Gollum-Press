@@ -1,5 +1,9 @@
 {% extends "Leap-Day/layout.html" %}
 
+{% block title %}
+    <title>{{ post.title }}</title>
+{% endblock %}
+
 {% block body %}
     <section>
         <h1 id="{{ post.post_id }}"><a href="/posts/{{ post.post_id }}">{{ post.title }}</a></h1>
