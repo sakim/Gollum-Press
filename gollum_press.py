@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys, os
+from recent_post_list import RecentPostList
 sys.path.append(os.getcwd())
 
 from dateutil import parser
@@ -21,17 +22,23 @@ def index():
 @app.route('/posts', methods=['GET'])
 def get_posts():
     page = int(request.args.get('page', '1'))
-    postList = PostList(page,
-                        working_dir=app.config['REPOSITORY'],
-                        index=app.config['INDEX_PAGE'],
-                        per_page=app.config['POSTS_PER_PAGE'])
-    return render_template(u"{0}/post_list.html".format(app.config['THEME']), posts=postList.posts, page=page)
+    post_list = PostList(page,
+                         working_dir=app.config['REPOSITORY'],
+                         index=app.config['INDEX_PAGE'],
+                         per_page=app.config['POSTS_PER_PAGE'])
+    recent = RecentPostList(working_dir=app.config['REPOSITORY'],
+                            index=app.config['INDEX_PAGE'])
+
+    return render_template(u"{0}/post_list.html".format(app.config['THEME']),
+                           posts=post_list.posts, recent=recent.posts, page=page, has_next=post_list.has_next)
 
 
 @app.route('/posts/<path:post_id>', methods=['GET'])
 def get_post(post_id):
     post = Post(post_id, working_dir=app.config['REPOSITORY'])
-    return render_template(u"{0}/post.html".format(app.config['THEME']), post=post)
+    recent = RecentPostList(working_dir=app.config['REPOSITORY'],
+                            index=app.config['INDEX_PAGE'])
+    return render_template(u"{0}/post.html".format(app.config['THEME']), post=post, recent=recent.posts)
 
 
 @app.route('/atom.xml', methods=['GET'])
@@ -52,6 +59,7 @@ def get_feed():
                  published=date)
 
     return feed.get_response()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
