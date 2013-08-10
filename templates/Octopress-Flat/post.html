@@ -1,0 +1,65 @@
+{% extends "Octopress-Flat/layout.html" %}
+
+{% block title %}
+    <title>{{ post.title }} - {{ config.TITLE }}</title>
+{% endblock %}
+
+{% block body %}
+    <div>
+        <article>
+            <header>
+                <h1 class="entry-title">{{ post.title }}</h1>
+            </header>
+        <span class="categories">
+        {% for tag in post.tags %}
+            <a class="category" href="/posts/{{ tag }}">{{ tag }}</a>
+        {% endfor %}
+        </span>
+            <div class="entry-content">
+                {{ post.content_markup }}
+            </div>
+
+            <footer>
+                <p class="meta">
+                    <span class="byline author vcard">Posted by <span class="fn">{{ post.author }}</span></span>
+                </p>
+
+                <div class="sharing">
+                </div>
+            </footer>
+        </article>
+
+        <section>
+            <h1>Comments</h1>
+            <div id="disqus_thread" aria-live="polite">
+                <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </div>
+        </section>
+
+        <script type="text/javascript">
+            var date = moment('{{ post.date }}', "YYYY-MM-DD HH:mm:ss Z").format("MMM Do, YYYY");
+            $(".meta").append('<time datetime="{{ post.date }}" pubdate="" data-updated="true">' + date + '</time>');
+        </script>
+
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = '{{ config.DISQUS_SHORTNAME }}'; // required: replace example with your forum shortname
+            var disqus_identifier = '{{ post.post_id }}';
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+    </div>
+{% endblock %}
+
+{% block recent %}
+    {% for post in recent %}
+        <li class="post">
+            <a class="category" href="/posts/{{ post.post_id }}">{{ post.title }}</a>
+        </li>
+    {% endfor %}
+{% endblock %}

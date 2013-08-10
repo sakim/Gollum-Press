@@ -1,4 +1,4 @@
-wikilog
+Gollum Press
 =======
 
-a gollum wiki powered blog.
+A gollum wiki powered blogging system.

@@ -1,0 +1,49 @@
+{% extends "Octopress-Flat/layout.html" %}
+
+{% block title %}
+    <title>{{ config.TITLE }}</title>
+{% endblock %}
+
+{% block body %}
+    <div class="blog-index">
+        {% for post in posts %}
+            <article>
+                <header>
+                    <h1 class="entry-title"><a href="/posts/{{ post.post_id }}">{{ post.title }}</a></h1>
+                </header>
+                <p id="date_{{ post.post_id }}" class="meta"></p>
+            <span class="categories">
+            {% for tag in post.tags %}
+                <a class="category" href="/posts/{{ tag }}">{{ tag }}</a>
+            {% endfor %}
+            </span>
+                <div class="entry-content">
+                    {{ post.content_markup }}
+                </div>
+            </article>
+
+            <script type="text/javascript">
+                var date = moment('{{ post.date }}', "YYYY-MM-DD HH:mm:ss Z").format("MMM Do, YYYY");
+                $("#date_" + "{{ post.post_id }}").append('<time datetime="{{ post.date }}" pubdate="" data-updated="true">' + date + '</time>');
+            </script>
+        {% endfor %}
+
+        <div class="pagination">
+            {% if has_next %}
+                <a class="prev" href="/posts?page={{ page + 1 }}">&larr; Older</a>
+            {% endif %}
+            <a href="/posts/{{ config.INDEX_PAGE }}">Blog Archives</a>
+            {% if page != 1 %}
+                <a class="next" href="/posts?page={{ page - 1 }}">Newer &rarr;</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block recent %}
+    {% for post in recent %}
+        <li class="post">
+            <a class="category" href="/posts/{{ post.post_id }}">{{ post.title }}</a>
+        </li>
+    {% endfor %}
+{% endblock %}
