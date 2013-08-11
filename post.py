@@ -28,7 +28,7 @@ class Post:
         self.content_markup = Markup(markdown.markdown(self.content))
 
     def read_author_date(self, filename, working_dir):
-        cmd = u"git log --date=iso -1 {0}".format(filename)
+        cmd = u"git log --diff-filter=A --date=iso -1 {0}".format(filename)
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=working_dir,  shell=True)
         p.wait()
 
