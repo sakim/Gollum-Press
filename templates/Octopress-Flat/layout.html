@@ -46,6 +46,13 @@
         {% block body %}{% endblock %}
 
         <aside class="sidebar">
+            <ul class="subscription" data-subscription="rss">
+                {% if config.GOOGLE_FEED_BURNER_ADDRESS %}
+                    <li><a href="http://feeds.feedburner.com/{{ config.GOOGLE_FEED_BURNER_ADDRESS }}" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+                {% else %}
+                    <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+                {% endif %}
+            </ul>
             <form action="http://google.com/search" method="get">
                 <fieldset role="search">
                     <input type="hidden" name="q" value="site:{{ config.SITE_URL }}" />
