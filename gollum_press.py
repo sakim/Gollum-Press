@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys, os
-from recent_post_list import RecentPostList
 sys.path.append(os.getcwd())
 
 from dateutil import parser
@@ -26,19 +25,19 @@ def get_posts():
                          working_dir=app.config['REPOSITORY'],
                          index=app.config['INDEX_PAGE'],
                          per_page=app.config['POSTS_PER_PAGE'])
-    recent = RecentPostList(working_dir=app.config['REPOSITORY'],
-                            index=app.config['INDEX_PAGE'])
 
     return render_template(u"{0}/post_list.html".format(app.config['THEME']),
-                           posts=post_list.posts, recent=recent.posts, page=page, has_next=post_list.has_next)
+                           posts=post_list.posts, recent=post_list.recent, page=page, has_next=post_list.has_next)
 
 
 @app.route('/posts/<path:post_id>', methods=['GET'])
 def get_post(post_id):
     post = Post(post_id, working_dir=app.config['REPOSITORY'])
-    recent = RecentPostList(working_dir=app.config['REPOSITORY'],
-                            index=app.config['INDEX_PAGE'])
-    return render_template(u"{0}/post.html".format(app.config['THEME']), post=post, recent=recent.posts)
+    post_list = PostList(PostList.RECENT_ONLY,
+                         working_dir=app.config['REPOSITORY'],
+                         index=app.config['INDEX_PAGE'],
+                         per_page=app.config['POSTS_PER_PAGE'])
+    return render_template(u"{0}/post.html".format(app.config['THEME']), post=post, recent=post_list.recent)
 
 
 @app.route('/atom.xml', methods=['GET'])
@@ -54,7 +53,7 @@ def get_feed():
                  id=post.post_id,
                  content_type='html',
                  author=post.author,
-                 url=u"posts/{0}".format(post.post_id),
+                 url=u"/posts/{0}".format(post.post_id),
                  updated=date,
                  published=date)
 
