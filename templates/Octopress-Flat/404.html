@@ -1,0 +1,36 @@
+{% extends "Octopress-Flat/layout.html" %}
+
+{% block title %}
+    <title>Page not found - {{ config.TITLE }}</title>
+{% endblock %}
+
+{% block body %}
+    <div>
+        <article>
+            <header>
+                <h1 class="entry-title">Page not found</h1>
+            </header>
+        <span class="categories">
+        </span>
+            <div class="entry-content">
+                This is not the web page you are looking for.
+            </div>
+
+            <footer>
+                <p class="meta">
+                </p>
+
+                <div class="sharing">
+                </div>
+            </footer>
+        </article>
+    </div>
+{% endblock %}
+
+{% block recent %}
+    {% for post in recent %}
+        <li class="post">
+            <a class="category" href="/posts/{{ post.post_id }}">{{ post.title }}</a>
+        </li>
+    {% endfor %}
+{% endblock %}

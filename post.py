@@ -6,6 +6,12 @@ import markdown
 from jinja2 import Markup
 
 
+class PostMeta:
+    def __init__(self, post_id):
+        self.post_id = post_id
+        self.title = post_id.replace('-', ' ')
+
+
 class Post:
     _pattern = r"\[\[(.*)\|(.*)\]\]|\[\[(.*)\]\]"
 

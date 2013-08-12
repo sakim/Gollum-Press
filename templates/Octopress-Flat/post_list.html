@@ -29,7 +29,7 @@
         {% endfor %}
 
         <div class="pagination">
-            {% if has_next %}
+            {% if page < total_pages %}
                 <a class="prev" href="/posts?page={{ page + 1 }}">&larr; Older</a>
             {% endif %}
             <a href="/posts/{{ config.INDEX_PAGE }}">Blog Archives</a>
