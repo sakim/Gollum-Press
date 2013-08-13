@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys, os
+import urllib
 sys.path.append(os.getcwd())
 
 from dateutil import parser
@@ -66,11 +67,14 @@ def get_feed():
     feed = AtomFeed(app.config['TITLE'], feed_url=request.url, url=request.url_root)
     for post in posts.get_posts(1):
         date = parser.parse(post.date)
-        feed.add(post.title, post.content_markup,
-                 id=post.post_id,
+        escaped_id = urllib.quote(post.post_id.encode("utf-8"))
+        url = u"/posts/{0}".format(escaped_id)
+
+        feed.add(post.title, post.content_markup.unescape(),
+                 id=escaped_id,
                  content_type='html',
                  author=post.author,
-                 url=u"/posts/{0}".format(post.post_id),
+                 url=url,
                  updated=date,
                  published=date)
 
