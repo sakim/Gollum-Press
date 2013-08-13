@@ -18,6 +18,7 @@ working_dir = app.config['REPOSITORY']
 index_page = app.config['INDEX_PAGE']
 posts_per_page = app.config['POSTS_PER_PAGE']
 theme = app.config['THEME']
+site_url = app.config['SITE_URL']
 
 
 @app.route('/')
@@ -67,11 +68,11 @@ def get_feed():
     feed = AtomFeed(app.config['TITLE'], feed_url=request.url, url=request.url_root)
     for post in posts.get_posts(1):
         date = parser.parse(post.date)
-        escaped_id = urllib.quote(post.post_id.encode("utf-8"))
-        url = u"/posts/{0}".format(escaped_id)
+        escaped = urllib.quote(post.post_id.encode("utf-8"))
+        url = u"{0}/posts/{1}".format(site_url, escaped)
 
         feed.add(post.title, post.content_markup.unescape(),
-                 id=escaped_id,
+                 id=url,
                  content_type='html',
                  author=post.author,
                  url=url,
