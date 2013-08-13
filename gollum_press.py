@@ -7,7 +7,6 @@ from dateutil import parser
 from flask import Flask, request, redirect, url_for, abort
 from flask.templating import render_template
 from werkzeug.contrib.atom import AtomFeed
-from post import Post
 from posts import Posts
 
 app = Flask(__name__)
@@ -19,6 +18,10 @@ index_page = app.config['INDEX_PAGE']
 posts_per_page = app.config['POSTS_PER_PAGE']
 theme = app.config['THEME']
 site_url = app.config['SITE_URL']
+
+posts = Posts(working_dir=working_dir,
+              index=index_page,
+              per_page=posts_per_page)
 
 
 @app.route('/')
@@ -34,26 +37,19 @@ def get_posts():
     if not os.path.exists(path):
         abort(500)
 
-    posts = Posts(working_dir=working_dir,
-                  index=index_page,
-                  per_page=posts_per_page)
+    posts.refresh()
 
     return render_template(u"{0}/post_list.html".format(theme),
-                           posts=posts.get_posts(page),
-                           recent=posts.get_recent_metas(), page=page, total_pages=posts.get_num_of_pages())
+                           posts=posts.get_posts(page), recent=posts.get_recent_metas(),
+                           page=page, total_pages=posts.get_num_of_pages())
 
 
 @app.route('/posts/<path:post_id>', methods=['GET'])
 def get_post(post_id):
-    path = u"{0}/{1}.md".format(working_dir, post_id)
-    if not os.path.exists(path):
+    posts.refresh()
+    post = posts.get_post(post_id)
+    if post is None:
         abort(404)
-
-    post = Post(post_id, working_dir=working_dir)
-
-    posts = Posts(working_dir=working_dir,
-                  index=index_page,
-                  per_page=posts_per_page)
 
     return render_template(u"{0}/post.html".format(theme),
                            post=post, recent=posts.get_recent_metas())
@@ -61,11 +57,9 @@ def get_post(post_id):
 
 @app.route('/atom.xml', methods=['GET'])
 def get_feed():
-    posts = Posts(working_dir=working_dir,
-                  index=index_page,
-                  per_page=posts_per_page)
-
     feed = AtomFeed(app.config['TITLE'], feed_url=request.url, url=request.url_root)
+    posts.refresh()
+
     for post in posts.get_posts(1):
         date = parser.parse(post.date)
         escaped = urllib.quote(post.post_id.encode("utf-8"))
@@ -84,9 +78,7 @@ def get_feed():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    posts = Posts(working_dir=working_dir,
-                  index=index_page,
-                  per_page=posts_per_page)
+    posts.refresh()
     return render_template(u"{0}/404.html".format(theme), recent=posts.get_recent_metas()), 404
 
 

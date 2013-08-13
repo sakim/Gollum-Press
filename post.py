@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import codecs
+import os
 import re
 import subprocess
 import markdown
@@ -10,6 +11,9 @@ class PostMeta:
     def __init__(self, post_id):
         self.post_id = post_id
         self.title = post_id.replace('-', ' ')
+
+    def get_url(self):
+        return u"/posts/{0}".format(self.post_id)
 
 
 class Tag:
@@ -26,21 +30,12 @@ class Post:
 
     def __init__(self, post_id, working_dir=None):
         self.post_id = post_id
+        self.working_dir = working_dir
         self.title = post_id.replace('-', ' ')
+        self.path = u"{0}/{1}.md".format(working_dir, post_id)
+        self.last_modified = 0
 
-        filename = u"{0}.md".format(post_id)
-        path = u"{0}/{1}.md".format(working_dir, post_id)
-
-        f = codecs.open(path, 'r', "utf-8")
-        self.content = f.read()
-        f.close()
-
-        self.read_tags()
-        self.replace_links()
-        self.author, self.date = self.read_author_date(filename, working_dir)
-
-        # markdown to html
-        self.content_markup = Markup(markdown.markdown(self.content))
+        self.reload()
 
     def read_author_date(self, filename, working_dir):
         cmd = u"git log --diff-filter=A --date=iso -1 {0}".format(filename)
@@ -96,3 +91,28 @@ class Post:
 
     def get_url(self):
         return u"/posts/{0}".format(self.post_id)
+
+    def refresh(self):
+        if self.is_up_to_date():
+            return
+        self.reload()
+
+    def is_up_to_date(self):
+        return self.get_last_modified() == self.last_modified
+
+    def get_last_modified(self):
+        return os.path.getmtime(self.path)
+
+    def reload(self):
+        self.last_modified = self.get_last_modified()
+        filename = u"{0}.md".format(self.post_id)
+        f = codecs.open(self.path, 'r', "utf-8")
+        self.content = f.read()
+        f.close()
+
+        self.read_tags()
+        self.replace_links()
+        self.author, self.date = self.read_author_date(filename, self.working_dir)
+
+        # markdown to html
+        self.content_markup = Markup(markdown.markdown(self.content))

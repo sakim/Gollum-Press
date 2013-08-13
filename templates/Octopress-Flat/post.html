@@ -59,7 +59,7 @@
 {% block recent %}
     {% for post in recent %}
         <li class="post">
-            <a class="category" href="/posts/{{ post.post_id }}">{{ post.title }}</a>
+            <a class="category" href="{{ post.get_url() }}">{{ post.title }}</a>
         </li>
     {% endfor %}
 {% endblock %}
