@@ -12,7 +12,7 @@
             </header>
         <span class="categories">
         {% for tag in post.tags %}
-            <a class="category" href="/posts/{{ tag }}">{{ tag }}</a>
+            <a class="category" href="{{ tag.get_url() }}">{{ tag.title }}</a>
         {% endfor %}
         </span>
             <div class="entry-content">

@@ -7,6 +7,8 @@ from post import Post, PostMeta
 
 
 class Posts:
+    pattern = r"^\s*\d+\.\s*\[\[([^\|]*?)\|?([^\|]*?)\]\]"  # 1. [[title|id]] or [[id]]
+
     def __init__(self, working_dir=None, index=None, per_page=None):
         self.working_dir = working_dir
         self.index = index
@@ -20,17 +22,12 @@ class Posts:
 
             # read whole file to give more flexible file format
             for line in f:
-                post_id = None
-
-                for match in re.finditer(r"^\d+\.*\[\[.*\|(.*)\]\]|.*\[\[(.*)\]\]", line, re.U):
-                    post_id = match.group(1) or match.group(2)
-                    break
-
-                if post_id is not None:
+                match = re.match(Posts.pattern, line, re.U)
+                if match:
+                    post_id = match.group(2)
                     path = u"{0}/{1}.md".format(working_dir, post_id)
                     if os.path.exists(path):
                         self.post_metas.append(PostMeta(post_id))
-
             f.close()
 
     def get_posts(self, page):

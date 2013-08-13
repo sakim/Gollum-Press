@@ -12,8 +12,17 @@ class PostMeta:
         self.title = post_id.replace('-', ' ')
 
 
+class Tag:
+    def __init__(self, tag_id, title):
+        self.title = title
+        self.tag_id = tag_id
+
+    def get_url(self):
+        return u'/posts/{0}'.format(self.tag_id)
+
+
 class Post:
-    _pattern = r"\[\[(.*)\|(.*)\]\]|\[\[(.*)\]\]"
+    pattern = r"\[\[([^\|]*?)\|?([^\|]*?)\]\]"  # [[title|id]] or [[id]]
 
     def __init__(self, post_id, working_dir=None):
         self.post_id = post_id
@@ -26,7 +35,7 @@ class Post:
         self.content = f.read()
         f.close()
 
-        self.read_categories()
+        self.read_tags()
         self.replace_links()
         self.author, self.date = self.read_author_date(filename, working_dir)
 
@@ -43,32 +52,47 @@ class Post:
                 return match.group(1), match.group(2)
         return "", ""
 
-    # TODO fix regex workaround.
-    def read_categories(self):
-        def sub(match):
-            if match.group(1):
-                return match.group(1)
-            else:
-                return match.group(3)
+    def read_tags(self):
+        """
+        Lorem Ipsum is simply dummy text. <- post body
+        * * *                             <- horizontal rule
+        [[tag1]], [[tag2 title|tag2id]]   <- tag
+        """
+        self.tags = []
+        lines = self.content.splitlines(True)
 
-        lines = self.content.splitlines()
-        if len(lines) >= 2:
-            candidate = lines.pop()
-            hr = lines.pop()
-            hr = "".join(hr.split())
-            # markdown horizontal rules (gollum log convention: category separator)
-            if hr.startswith(u'---') or hr.startswith(u'***') or hr.startswith(u'___'):
-                tags = re.sub(Post._pattern, sub, candidate, 0, re.U)
-                self.tags = tags.split(',')
-                self.content = "\n".join(lines)
-            else:
-                self.tags = []
+        def is_horizontal_rule(line):
+            line = "".join(line.split())
+            return line.startswith(u'---') or line.startswith(u'***') or line.startswith(u'___')
+
+        def get_raw_tags():
+            raw_tags, hr = None, None
+            for line in reversed(lines):
+                lines.pop()
+                if line.strip() == '':
+                    continue
+
+                if raw_tags is None:
+                    raw_tags = line
+                else:
+                    return raw_tags if is_horizontal_rule(line) else None
+
+        raw_tags = get_raw_tags()
+
+        if raw_tags is not None:
+            for match in re.finditer(Post.pattern, raw_tags, re.U):
+                tag_id = match.group(2)
+                title = match.group(1) if match.group(1) != '' else match.group(2)
+                self.tags.append(Tag(tag_id, title))
+
+            self.content = "".join(lines)  # content without tag lines
 
     def replace_links(self):
         def sub(match):
-            if match.group(1):
-                return u"[{1}]({0}/{2})".format(u"/posts", match.group(1), match.group(2))
-            else:
-                return u"[{1}]({0}/{2})".format(u"/posts", match.group(3), match.group(3))
+            return u"[{1}](/posts/{0})".format(match.group(2),
+                                               match.group(1) if match.group(1) != '' else match.group(2))
 
-        self.content = re.sub(Post._pattern, sub, self.content, 0, re.U)
+        self.content = re.sub(Post.pattern, sub, self.content, 0, re.U)
+
+    def get_url(self):
+        return u"/posts/{0}".format(self.post_id)
