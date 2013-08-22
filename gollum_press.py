@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, os
 import urllib
-sys.path.append(os.getcwd())
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 from dateutil import parser
 from flask import Flask, request, redirect, url_for, abort
@@ -83,7 +83,7 @@ def page_not_found(error):
 
 
 @app.errorhandler(500)
-def page_not_found(error):
+def internal_server_error(error):
     return render_template(u"{0}/500.html".format(theme)), 404
 
 
