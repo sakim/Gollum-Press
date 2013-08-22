@@ -88,7 +88,7 @@ class Post:
 
     def replace_links(self):
         def sub(match):
-            return u"[{1}](/posts/{0})".format(match.group(2),
+            return u"[{1}](/posts/{0})".format(urllib.quote(match.group(2).encode("utf-8")),
                                                match.group(1) if match.group(1) != '' else match.group(2))
 
         self.content = re.sub(Post.pattern, sub, self.content, 0, re.U)
