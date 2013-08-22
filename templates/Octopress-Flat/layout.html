@@ -5,16 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
     <meta charset="utf-8">
-    {% block title %}{% endblock %}
+    {% block meta %}{% endblock %}
     <meta name="author" content="{{ config.ME }}">
-    <meta name="description" content=" Blog Archives Recent Posts ">
 
     <!-- http://t.co/dKP3o1e -->
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="canonical" href="{{ config.SITE_URL }}">
     <link href="{{ url_for('static', filename='Octopress-Flat/favicon.png') }}" rel="icon">
     <link href="{{ url_for('static', filename='Octopress-Flat/stylesheets/screen.css') }}" media="screen, projection" rel="stylesheet" type="text/css">
     <script src="{{ url_for('static', filename='Octopress-Flat/javascripts/moment.min.js') }}"></script>

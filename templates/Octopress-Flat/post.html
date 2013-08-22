@@ -1,7 +1,11 @@
 {% extends "Octopress-Flat/layout.html" %}
 
-{% block title %}
+{% block meta %}
     <title>{{ post.title }} - {{ config.TITLE }}</title>
+    <meta property="og:url" content="{{ config.SITE_URL  }}{{ post.get_url() }}" />
+    <meta property="og:title" content="{{ post.title }}" />
+    <meta property="og:description" content="{{ post.content[:100] }}..." />
+    <link rel="canonical" href="{{ config.SITE_URL }}{{ post.get_url() }}">
 {% endblock %}
 
 {% block body %}
