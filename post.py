@@ -3,6 +3,7 @@ import codecs
 import os
 import re
 import subprocess
+import urllib
 import markdown
 from jinja2 import Markup
 
@@ -11,18 +12,20 @@ class PostMeta:
     def __init__(self, post_id):
         self.post_id = post_id
         self.title = post_id.replace('-', ' ')
+        self.url = u"/posts/{0}".format(urllib.quote(self.post_id.encode("utf-8")))
 
     def get_url(self):
-        return u"/posts/{0}".format(self.post_id)
+        return self.url
 
 
 class Tag:
     def __init__(self, tag_id, title):
         self.title = title
         self.tag_id = tag_id
+        self.url = u"/posts/{0}".format(urllib.quote(self.tag_id.encode("utf-8")))
 
     def get_url(self):
-        return u'/posts/{0}'.format(self.tag_id)
+        return self.url
 
 
 class Post:
@@ -33,6 +36,7 @@ class Post:
         self.working_dir = working_dir
         self.title = post_id.replace('-', ' ')
         self.path = u"{0}/{1}.md".format(working_dir, post_id)
+        self.url = u"/posts/{0}".format(urllib.quote(self.post_id.encode("utf-8")))
         self.last_modified = 0
 
         self.reload()
@@ -90,7 +94,7 @@ class Post:
         self.content = re.sub(Post.pattern, sub, self.content, 0, re.U)
 
     def get_url(self):
-        return u"/posts/{0}".format(self.post_id)
+        return self.url
 
     def refresh(self):
         if self.is_up_to_date():
