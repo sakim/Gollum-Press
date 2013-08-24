@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
-import sys, os
+import sys
+import os
 import urllib
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
+import shutil
 from dateutil import parser
 from flask import Flask, request, redirect, url_for, abort
 from flask.templating import render_template
 from werkzeug.contrib.atom import AtomFeed
 from posts import Posts
 
-app = Flask(__name__)
+app = Flask(__name__, static_path='')
 app.config.from_pyfile('config.cfg')
 
 # config
+current_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(current_dir)
 working_dir = app.config['REPOSITORY']
 index_page = app.config['INDEX_PAGE']
 posts_per_page = app.config['POSTS_PER_PAGE']
@@ -85,6 +87,23 @@ def page_not_found(error):
 @app.errorhandler(500)
 def internal_server_error(error):
     return render_template(u"{0}/500.html".format(theme)), 404
+
+
+def symlink(src, dst):
+    if os.path.exists(src):
+        if not os.path.exists(dst):
+            os.symlink(src, dst)
+        elif not os.path.islink(dst):
+            if os.path.isdir(dst):
+                shutil.rmtree(dst)
+            else:
+                os.remove(dst)
+            os.symlink(src, dst)
+        elif os.readlink(dst) != src:
+            os.remove(dst)
+            os.symlink(src, dst)
+
+symlink(u'{0}/images'.format(working_dir), u'{0}/static/images'.format(current_dir))
 
 
 if __name__ == '__main__':

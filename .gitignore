@@ -1,3 +1,6 @@
+# symlink to images
+static/images
+
 *.py[cod]
 
 # C extensions
