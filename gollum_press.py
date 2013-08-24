@@ -7,14 +7,15 @@ from dateutil import parser
 from flask import Flask, request, redirect, url_for, abort
 from flask.templating import render_template
 from werkzeug.contrib.atom import AtomFeed
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(current_dir)
 from posts import Posts
 
 app = Flask(__name__, static_path='')
 app.config.from_pyfile('config.cfg')
 
 # config
-current_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(current_dir)
 working_dir = app.config['REPOSITORY']
 index_page = app.config['INDEX_PAGE']
 posts_per_page = app.config['POSTS_PER_PAGE']
